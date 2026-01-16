@@ -1,10 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { User, Mail, FileText, MessageSquare, Send } from "lucide-react";
+import { User, Mail, FileText, MessageSquare, Send, Loader2 } from "lucide-react";
+import { submitContactForm } from "./actions";
 
 export default function Contact() {
   const [messageLength, setMessageLength] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
 
   return (
     <div className="max-w-4xl mx-auto p-10">
@@ -16,7 +22,36 @@ export default function Contact() {
           Get in touch with me. I'd love to hear from you!
         </p>
         
-        <form className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setIsSubmitting(true);
+            setSubmitStatus({ type: null, message: "" });
+
+            const formData = new FormData(e.currentTarget);
+            const data = {
+              name: formData.get("name") as string,
+              email: formData.get("email") as string,
+              subject: formData.get("subject") as string,
+              message: formData.get("message") as string,
+            };
+
+            const result = await submitContactForm(data);
+
+            setIsSubmitting(false);
+            setSubmitStatus({
+              type: result.success ? "success" : "error",
+              message: result.message || "Something went wrong. Please try again.",
+            });
+
+            // Reset form on success
+            if (result.success) {
+              (e.target as HTMLFormElement).reset();
+              setMessageLength(0);
+            }
+          }}
+        >
           <div>
             <label htmlFor="name" className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2" style={{ fontFamily: "'Times New Roman', serif" }}>
               <User size={16} className="text-blue-500" />
@@ -91,12 +126,36 @@ export default function Contact() {
             </div>
           </div>
 
+          {/* Status Message */}
+          {submitStatus.type && (
+            <div
+              className={`p-4 rounded-lg ${
+                submitStatus.type === "success"
+                  ? "bg-green-50 border border-green-200 text-green-800"
+                  : "bg-red-50 border border-red-200 text-red-800"
+              }`}
+              style={{ fontFamily: "'Times New Roman', serif" }}
+            >
+              <p className="text-sm font-medium">{submitStatus.message}</p>
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg transition-all duration-200 hover:from-blue-700 hover:to-purple-700 font-sans font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-2 transform hover:scale-[1.02]"
+            disabled={isSubmitting}
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg transition-all duration-200 hover:from-blue-700 hover:to-purple-700 font-sans font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-2 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            <Send size={18} />
-            Send Message
+            {isSubmitting ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send size={18} />
+                Send Message
+              </>
+            )}
           </button>
         </form>
       </div>
