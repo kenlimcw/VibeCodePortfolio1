@@ -42,10 +42,10 @@ export async function submitContactForm(
     }
 
     // Get webhook URL from environment variable (server-side only)
-    const webhookUrl = process.env.N8N_WEBHOOK_URL;
+    const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
     
     if (!webhookUrl) {
-      console.error("N8N_WEBHOOK_URL is not configured");
+      console.error("NEXT_PUBLIC_N8N_WEBHOOK_URL is not configured");
       return {
         success: false,
         message: "Server configuration error. Please try again later.",
