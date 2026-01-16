@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center flex-1 p-10 bg-gray-900 text-white min-h-[calc(100vh-200px)]" style={{ fontFamily: "'Times New Roman', serif" }}>
       <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-500 via-blue-400 to-purple-500 bg-clip-text text-transparent text-center">
-        Hello, I am an Architect.
+        Hello, I am an Architect Builder of Vibe Coding.
       </h1>
       <p className="text-xl text-gray-300 mb-8 text-center tracking-tight leading-tight">
         This is my new portfolio site built with "Vibe Coding."
