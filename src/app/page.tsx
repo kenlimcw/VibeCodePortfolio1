@@ -26,6 +26,12 @@ export default function Home() {
           View Projects
         </Link>
         {/* REPLACED CODE ENDS HERE */}
+        <Link 
+          href="/contact" 
+          className="contact-button px-6 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg transition-all duration-200 min-w-[140px] text-center font-sans"
+        >
+          Contact
+        </Link>
       </div>
     </div>
   );
